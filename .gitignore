@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+Include/site/python3.10/greenlet/
+
+pyvenv.cfg
+
+Scripts/
