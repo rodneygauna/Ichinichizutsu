@@ -61,8 +61,7 @@ def db_drop():
 @app.route('/', methods=['GET'])
 def index():
     '''Route: Index page'''
-    return render_template('index.html',
-                           title='Ichi-Nichi Zutsu')
+    return render_template('index.html', title='Ichi-Nichi Zutsu')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,9 +78,7 @@ def login():
 
             return redirect(next or url_for('index'))
 
-    return render_template('login.html',
-                           title='Ichi-Nichi Zutsu',
-                           form=form)
+    return render_template('login.html', title='Ichi-Nichi Zutsu', form=form)
 
 
 @app.route('/logout')
@@ -119,9 +116,7 @@ def register():
 
             return redirect(url_for('index'))
 
-    return render_template('register.html',
-                           title='Register',
-                           form=form)
+    return render_template('register.html', title='Register', form=form)
 
 
 class RegistrationForm(FlaskForm):
