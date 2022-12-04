@@ -1,14 +1,17 @@
-from flask import Flask, jsonify, request, redirect, render_template, url_for
+'''
+    /app.py
+'''
+
+import os
+from flask import Flask, request, redirect, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String
-import os
 from dotenv import load_dotenv
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, Length, EqualTo
-from flask_login import login_user, LoginManager, UserMixin
+from flask_login import login_user, LoginManager, UserMixin, logout_user
 
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -20,44 +23,51 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 app.config['SECRET_KEY'] = SECRET_KEY
 
 db = SQLAlchemy(app)
-jwt = JWTManager(app)
 login_manager = LoginManager()
 login_manager.login_view = 'login'
-login_manager.login_message = u'You have to login to view this page'
+login_manager.login_message = 'You have to login to view this page'
 login_manager.login_message_category = 'warning'
 login_manager.init_app(app)
 
 
 @login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def load_user(email):
+    '''Queries the user's id for use with LoginManager'''
+    user = User.query.get(email)
+    user.id = email
+    return user
 
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    '''If the user isn't authorized, will be redirected to the login page'''
     return redirect(url_for('login'))
 
 
 @app.cli.command('db_create')
 def db_create():
+    '''Use "flask db_create" to create the database in the terminal'''
     db.create_all()
     print('Database created')
 
 
 @app.cli.command('db_drop')
 def db_drop():
+    '''Use "flask db_drop" to drop the database in the terminal'''
     db.drop_all()
     print('Databased dropped')
 
 
 @app.route('/', methods=['GET'])
 def index():
+    '''Route: Index page'''
     return render_template('index.html',
                            title='Ichi-Nichi Zutsu')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    '''Route: Login page'''
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -69,10 +79,16 @@ def login():
 
             return redirect(next or url_for('index'))
 
-            return redirect(next)
     return render_template('login.html',
                            title='Ichi-Nichi Zutsu',
                            form=form)
+
+
+@app.route('/logout')
+def logout():
+    '''Route: Loggs out the user'''
+    logout_user()
+    return redirect(url_for('index'))
 
 
 class LoginForm(FlaskForm):
@@ -84,6 +100,7 @@ class LoginForm(FlaskForm):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    '''Route: Registration page'''
     form = RegistrationForm()
 
     if form.validate_on_submit():
@@ -117,6 +134,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
     def check_email(self, field):
+        '''checks if the email is already in use'''
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('This email is already registered')
 
@@ -131,6 +149,7 @@ class User(db.Model, UserMixin):
     password = Column(String)
 
     def check_password(self, password):
+        '''Checks the hash of the user's password'''
         return check_password_hash(self.password, password)
 
 
