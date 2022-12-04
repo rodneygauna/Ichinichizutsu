@@ -31,7 +31,7 @@ class Users(db.Model, UserMixin):
         db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
 
     def check_password(self, password):
-        '''Checks the password'''
+        '''Checks the password during login'''
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
