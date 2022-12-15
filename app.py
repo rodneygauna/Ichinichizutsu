@@ -1,5 +1,5 @@
 '''
-    /app.py
+This is the main file of the web application.
 '''
 
 from website import app
