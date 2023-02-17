@@ -5,9 +5,9 @@
 from flask import request, redirect, render_template, url_for, Blueprint
 from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash
-from website.models import Users
-from website.users.forms import RegistrationForm, LoginForm
-from website import db
+from src.models import Users
+from src.users.forms import RegistrationForm, LoginForm
+from src import db
 
 
 users = Blueprint('users', __name__)

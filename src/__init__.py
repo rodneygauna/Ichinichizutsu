@@ -22,8 +22,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-from website.users.views import users
-from website.core.views import core
+from src.users.views import users
+from src.core.views import core
 
 app.register_blueprint(core)
 app.register_blueprint(users)

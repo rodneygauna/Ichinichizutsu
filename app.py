@@ -2,7 +2,7 @@
 This is the main file of the web application.
 '''
 
-from website import app
+from src import app
 
 
 if __name__ == '__main__':
