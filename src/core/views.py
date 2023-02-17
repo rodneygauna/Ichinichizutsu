@@ -2,6 +2,7 @@
     website/users/views.py
 '''
 
+from datetime import datetime
 from flask import render_template, Blueprint, request, redirect, url_for
 from flask_login import login_required, current_user
 from src.core.forms import TodoForm
@@ -46,3 +47,27 @@ def add_todo():
     return render_template('add_todo.html',
                            title='Ichi-Nichi Zutsu',
                            form=form)
+
+
+@core.route('/todos/<int:todo_id>', methods=['GET', 'POST'])
+@login_required
+def edit_todo(todo_id):
+    '''Route: Edit Todo page'''
+    form = TodoForm()
+    todo = Todos.query.get_or_404(todo_id)
+
+    if form.validate_on_submit():
+        todo.title = form.title.data
+        todo.description = form.description.data
+        todo.status = form.status.data
+        todo.updated_at = datetime.utcnow()
+        db.session.commit()
+        return redirect(url_for('core.todos'))
+    elif request.method == 'GET':
+        form.title.data = todo.title
+        form.description.data = todo.description
+        form.status.data = todo.status
+    return render_template('edit_todo.html',
+                           title='Ichi-Nichi Zutsu',
+                           form=form,
+                           todo=todo)
