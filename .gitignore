@@ -133,3 +133,4 @@ Include/site/python3.10/greenlet/
 pyvenv.cfg
 
 Scripts/
+src/database.db
