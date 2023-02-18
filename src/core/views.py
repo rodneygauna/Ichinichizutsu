@@ -71,3 +71,13 @@ def edit_todo(todo_id):
                            title='Ichi-Nichi Zutsu',
                            form=form,
                            todo=todo)
+
+
+@core.route('/todos/<int:todo_id>/delete', methods=['GET', 'POST'])
+@login_required
+def delete_todo(todo_id):
+    '''Route: Delete Todo page'''
+    todo = Todos.query.get_or_404(todo_id)
+    db.session.delete(todo)
+    db.session.commit()
+    return redirect(url_for('core.todos'))

@@ -1,9 +1,12 @@
 {% extends "base.html" %} {% block content %}
 <h1>ToDos</h1>
+<a href="{{url_for('core.add_todo')}}">New Todo</a>
 <ul>
   {% for todo in todo_list %}
   <li>
-    <a href="/todos/{{todo.id}}">{{ todo.title }}</a>
+    <a href="{{url_for('core.edit_todo', todo_id=todo.id)}}"
+      >{{ todo.title }}</a
+    >
   </li>
   {% endfor %} {% endblock content %}
 </ul>
